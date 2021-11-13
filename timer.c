@@ -5,37 +5,40 @@
 #include <unistd.h>
 #include <time.h>
 
-int isHandled;
+//Credit to: Shail Pokharel & Shane Oliver
+
+int alarmOn = 0;
 int alarmNum = 0;
-time_t startTime;
-time_t endTime;
 
 void handler(int signum){ 
   //signal handler
-  isHandled = 1;
-  alarmNum +=1;
   printf("Hello World!\n");
-  alarm(1);
+  sleep(5);
+  alarmOn = 1;
+  alarmNum ++;
 }
 
 void handler2(int signum){
-  time_t runtime;
-  endTime = time(NULL);
-  runtime = endTime-startTime;
+  int totalTime;
+  stop = time(NULL);
+  totalTime = stop - start;
   printf("Number of alarms was %d\n", alarmNum);
   printf("\nRuntime: %d \n", (int)runtime);
-  exit(0);
+  
 }
 
 int main(int argc, char * argv[]){
-  startTime = time(NULL);
-  signal(SIGALRM,handler);//register handler to handle SIGALRM
-  signal(SIGINT,handler2);
+  signal(SIGALRM, handler);
+  signal(SIGALRM, handler2);
+  start = time(NULL);
+  
   while(1){
-    isHandled = 0;
-    alarm(1);
-    while(isHandled == 0);
+    alarmOn = 0;
+    alarm(5);
+    
+    while(!alarmOn)
+      ;
     printf("turing was right!\n");
   }
-  return 0; //never reached
+  return 0;
 }
